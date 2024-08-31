@@ -1,4 +1,6 @@
 const { Client, Events } = require("discord.js");
+require('dotenv').config();  
+
 
 let tsukuCount = 0;
 
@@ -85,4 +87,4 @@ client.on(Events.GuildMemberAdd, async (member) => {
 })
 
 
-client.login("MTI3OTQ4MjQ2MzUwNDMwNjI0OQ.G5XQ8P.lARz2NdLZCYxaY1acihpPlujDafUv01fWpxwIU");
+client.login(process.env.DISCORD_TOKEN);

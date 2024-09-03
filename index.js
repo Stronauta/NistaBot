@@ -1,5 +1,12 @@
 const { Client, Events } = require("discord.js");
-require('dotenv').config();  
+const Discord = require("discord.js");
+const fs = require("fs");
+const path = require("path");
+const config = require("./config.json");
+const { REST } = require('@discordjs/rest'); 
+const { Routes } = require('discord.js'); 
+const { EmbedBuilder } = require('discord.js');
+
 
 
 let tsukuCount = 0;
@@ -8,83 +15,85 @@ const client = new Client({
     intents: 53608447
 });
 
+
+//Cargar comandos
+
+client.commands = new Discord.Collection();
+
+fs.readdirSync("./commands").forEach((file) => {
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.data.name, command);
+});
+
+// fs.readdirSync("./events")
+//     .filter((file) => file.endsWith(".js"))
+//     .forEach((file) => {
+
+//         try{
+//             const listener = require(`./events/${file}`);
+//             const eventName = path.basename(file, ".js");
+
+//             client.on(eventName, listener)
+//         } catch(error){
+//             console.error(`Hubo un error al cargar el evento ${file}: ${error}`);
+//         }
+
+// });
+
+
+//Registrar Comandos
+
+const rest = new REST({ version: '10' }).setToken(config.CLIENT_TOKEN); 
+(async () => {
+    try {
+        console.log("Registrando comandos...");
+        await rest.put(
+            Routes.applicationGuildCommands(config.client_ID, config.guild_ID), 
+            {
+                body: client.commands.map((command) => command.data.toJSON())
+            }
+        );
+        console.log("Comandos registrados correctamente.");
+    } catch (error) {
+        console.error(error);
+        console.log("Error al registrar comandos.");
+    }
+})();
+
+
+
 client.on(Events.ClientReady, async () => {
     console.log(`Conectado como ${client.user.username}`);
 });
 
-client.on(Events.MessageCreate, async (message) => {
-    if (message.author.bot) return; 
-    if (!message.content.startsWith("!")) return; 
 
-    const args = message.content.slice(1).split(' ')[0].toLowerCase(); 
+client.on("interactionCreate", async (interaction) => {
+    if(interaction.isChatInputCommand()){
+        const command = client.commands.get(interaction.commandName);
 
-    const roleNameId = "833519995740094471"; 
-    const role = message.guild.roles.cache.get(roleNameId);
+        command.execute(interaction).catch(console.error);
 
+    }else{
 
-    if (args === "flip") {
-        const outcome = Math.random() < 0.5 ? 'cara' : 'cruz';
-        message.reply(`¡Ha salido ${outcome}!`);
-    }
-
-    if (args === "hola") {
-        message.reply("¡Hola!");
     }
     
-    if (args === "tsuku") {
-        message.reply("¡Tsukuyomi es puto!");
-    }
+});
 
-    if (args === "s") {
-        if (role) {
-            message.reply(`¡Vamos a jugar! ${role}`);
-        } else {
-            message.reply(`No se encontró ningún rol llamado ${roleNameId}.`);
-        }
-    }
 
-    if (args === "s?") {
-        const poll = message.content.split(' ').slice(1).join(' ');
+client.on('guildMemberAdd', async (member) => {
+    const welcomeChannelId = config.WELCOME_CHANNEL_ID;
+    const channel = member.guild.channels.cache.get(welcomeChannelId);
 
-        if (role) {
-            message.reply(`**¿Jugamos?** ${role}`);
+    if (channel) {
+        const embed = new EmbedBuilder()
+            .setTitle('¡Bienvenido!')
+            .setDescription(`Hola ${member.user} ¡Disfruta tu estancia!`)
+            .setColor(0x00AE86)
+            .setThumbnail(member.user.avatarURL());
+            
 
-        } else {
-            message.reply(`No se encontró ningún rol llamado ${roleName}.`);
-        }
-    }
-
-    if (args === "chiste") {
-        const chistes = [
-            "¿Por qué los pájaros no usan Facebook? Porque ya tienen Twitter.",
-            "¿Cómo se dice pañuelo en japonés? Saka-moko.",
-            "¿Qué hace una abeja en el gimnasio? ¡Zum-ba!",
-            "¿Qué le dice una iguana a su hermana gemela? Somos iguanitas.",
-            "¿Por qué las focas miran siempre hacia arriba? ¡Porque ahí están los focos!"
-        ];
-
-        const chisteAleatorio = chistes[Math.floor(Math.random() * chistes.length)];
-        message.reply(chisteAleatorio);
-    }
-
-    if (args === "gei") {
-        const user = message.mentions.users.first() || message.author;
-        message.reply("¡Eres un gei! " + user.displayAvatarURL({ dynamic: true }));
-    }
-
-    
-    if (args === "logout") {
-        message.reply("Apagando el bot...");
-        client.destroy(); 
+        channel.send({ embeds: [embed] });
     }
 });
 
-client.on(Events.GuildMemberAdd, async (member) => {
-    const welcomeId = "639689591951196191";
-    const channel = await client.channels.fetch(welcomeId);
-
-    channel.send(`¡Bienvenido al servidor, ${member}!`);
-})
-
-
-client.login(process.env.DISCORD_TOKEN);
+client.login(config.CLIENT_TOKEN);

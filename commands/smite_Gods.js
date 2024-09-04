@@ -1,12 +1,50 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const gods = {
-    mago: ['Agni', 'Anubis', 'Aphrodite', 'Hel', 'Hera'],
-    asesino: ['Arachne', 'Awilix', 'Bakasura', 'Bastet', 'Loki'],
-    cazador: ['Ah Muzen Cab', 'Apollo', 'Artemis', 'Chernobog', 'Xbalanque'],
-    warrior: ['Achilles', 'Amaterasu', 'Chaac', 'Hercules', 'King Arthur'],
-    guardian: ['Ares', 'Athena', 'Bacchus', 'Cabrakan', 'Geb']
+    mago: [
+        'Agni', 'Anubis', 'Aphrodite', 'Hel', 'Hera', 
+        'Ah Puch', 'Ao Kuang', 'Baba Yaga', 'Chang\'e', 
+        'Chronos', 'Discordia', 'Eset', 'Freya', 
+        'Hades', 'He Bo', 'Ix Chel', 'Janus', 
+        'Kukulkan', 'Maman Brigitte', 'Merlin', 
+        'Morgan Le Fay', 'Nox', 'Nu Wa', 'Olorun', 
+        'Persephone', 'Poseidon', 'Ra', 'Raijin', 
+        'Scylla', 'Sol', 'The Morrigan', 'Thoth', 
+        'Tiamat', 'Vulcan', 'Yu Huang', 'Zeus', 
+        'Zhong Kui'
+    ],
+    asesino: [
+        'Arachne', 'Awilix', 'Bakasura', 'Bastet', 
+        'Loki', 'Camazotz', 'Cliodhna', 'Da Ji', 
+        'Fenrir', 'Mercury', 'Ne Zha', 'Nemesis', 
+        'Pele', 'Ratatoskr', 'Ravana', 'Serqet', 
+        'Set', 'Susano', 'Thanatos', 'Thor', 
+        'Tsukuyomi'
+    ],
+    cazador: [
+        'Ah Muzen Cab', 'Apollo', 'Artemis', 'Chernobog', 
+        'Xbalanque', 'Cernunnos', 'Charybdis', 'Chiron', 
+        'Cupid', 'Danzaburou', 'Hachiman', 'Ishtar', 
+        'Jing Wei', 'Medusa', 'Neith', 'Rama', 
+        'Skadi', 'Ullr'
+    ],
+    warrior: [
+        'Achilles', 'Amaterasu', 'Chaac', 'Hercules', 
+        'King Arthur', 'Cu Chulainn', 'Erlang Shen', 
+        'Gilgamesh', 'Guan Yu', 'Mulan', 'Nike', 
+        'Odin', 'Osiris', 'Shiva', 'Sun Wukong', 
+        'Surtr', 'Vamana'
+    ],
+    guardian: [
+        'Ares', 'Athena', 'Bacchus', 'Cabrakan', 
+        'Geb', 'Artio', 'Atlas', 'Cthulhu', 
+        'Fafnir', 'Ganesha', 'Jormungandr', 'Khepri', 
+        'Kumbhakarna', 'Kuzenbo', 'Maui', 'Sobek', 
+        'Sylvanus', 'Terra', 'Xing Tian', 'Yemoja', 
+        'Ymir'
+    ]
 };
+
 
 module.exports = {
     data: new SlashCommandBuilder()

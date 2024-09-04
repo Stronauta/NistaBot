@@ -7,14 +7,9 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord.js'); 
 const { EmbedBuilder } = require('discord.js');
 
-
-
-let tsukuCount = 0;
-
 const client = new Client({
     intents: 53608447
 });
-
 
 //Cargar comandos
 
@@ -24,21 +19,6 @@ fs.readdirSync("./commands").forEach((file) => {
     const command = require(`./commands/${file}`);
     client.commands.set(command.data.name, command);
 });
-
-// fs.readdirSync("./events")
-//     .filter((file) => file.endsWith(".js"))
-//     .forEach((file) => {
-
-//         try{
-//             const listener = require(`./events/${file}`);
-//             const eventName = path.basename(file, ".js");
-
-//             client.on(eventName, listener)
-//         } catch(error){
-//             console.error(`Hubo un error al cargar el evento ${file}: ${error}`);
-//         }
-
-// });
 
 
 //Registrar Comandos

@@ -8,6 +8,6 @@ module.exports = {
         .setDescription('Insultas al buen Tsukuyomi'),
 
         async execute(interaction) {
-            await interaction.reply('¡Tsukuyomi es puto!');
+            await interaction.reply('¡Tsukuyomi es!');
         }
 };
